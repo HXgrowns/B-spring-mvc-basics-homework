@@ -15,9 +15,14 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> register(@RequestBody User user) {
         userService.register(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(Result.success(null));
     }
+
+    @GetMapping("/login")
+    public ResponseEntity<?> login(String name, String password) {
+        return ResponseEntity.ok(Result.success(userService.login(name, password)));
+    }
+
 }

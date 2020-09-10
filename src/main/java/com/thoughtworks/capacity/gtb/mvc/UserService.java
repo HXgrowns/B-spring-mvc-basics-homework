@@ -25,4 +25,10 @@ public class UserService {
         users.add(user);
     }
 
+    public User login(String name, String password) {
+        CheckUtil.checkName(name);
+        CheckUtil.checkPassword(password);
+        return users.stream().filter(user->name.equals(user.getName()) && password.equals(user.getPassword()))
+                .findFirst().orElseThrow(()->GlobalException.newException(ExceptionEnum.NAME_OR_PASSWORD_INCORRECT));
+    }
 }
