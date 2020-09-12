@@ -1,5 +1,6 @@
-package com.thoughtworks.capacity.gtb.mvc;
+package com.thoughtworks.capacity.gtb.mvc.service;
 
+import com.thoughtworks.capacity.gtb.mvc.domain.User;
 import com.thoughtworks.capacity.gtb.mvc.exception.ExceptionEnum;
 import com.thoughtworks.capacity.gtb.mvc.exception.GlobalException;
 import com.thoughtworks.capacity.gtb.mvc.utils.CheckUtil;

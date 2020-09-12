@@ -22,21 +22,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidExceptionException(MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();
-        String msg = "";
+        StringBuilder msg = new StringBuilder();
         if (bindingResult.hasFieldErrors()) {
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                msg = fieldError.getDefaultMessage();
-                break;
+                msg.append(fieldError.getDefaultMessage()).append(";");
             }
         }
-        return ResponseEntity.badRequest().body(Result.errorBusiness(msg));
+        return ResponseEntity.badRequest().body(Result.errorBusiness(msg.toString()));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<?> handleConstraintViolationExceptionExceptionException(ConstraintViolationException e) {
-        Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
         String message = "";
-        for (ConstraintViolation<?> constraintViolation : constraintViolations) {
+        for (ConstraintViolation<?> constraintViolation : e.getConstraintViolations()) {
             message = constraintViolation.getMessage();
         }
         return ResponseEntity.badRequest().body(Result.errorBusiness(message));
