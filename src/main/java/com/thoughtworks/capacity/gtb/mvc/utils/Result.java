@@ -6,40 +6,34 @@ public class Result<T> {
     private int code;
     private String message;
     private T data;
+    private final int DEFAULT_BUSINESS_ERROR_CODE = 2;
 
     private Result(ExceptionEnum exceptionEnum) {
         this.code = exceptionEnum.getCode();
         this.message = exceptionEnum.getMessage();
     }
 
-    /**
-     * 成功
-     *
-     * @param data
-     * @param <T>
-     * @return
-     */
+    private Result(String msg) {
+        this.message = msg;
+        this.code = DEFAULT_BUSINESS_ERROR_CODE;
+    }
+
     public static <T> Result<T> success(T data) {
         Result<T> result = new Result<>(ExceptionEnum.SUCCESS);
         result.setData(data);
         return result;
     }
 
-    /**
-     * 业务错误
-     *
-     * @param exceptionEnum
-     * @return
-     */
+
     public static Result<?> errorBusiness(ExceptionEnum exceptionEnum) {
         return new Result<>(exceptionEnum);
     }
 
-    /**
-     * 系统错误
-     *
-     * @return
-     */
+
+    public static Result<?> errorBusiness(String msg) {
+        return new Result<>(msg);
+    }
+
     public static Result<?> errorSystem() {
         return new Result<>(ExceptionEnum.UNKNOWN_ERROR);
     }

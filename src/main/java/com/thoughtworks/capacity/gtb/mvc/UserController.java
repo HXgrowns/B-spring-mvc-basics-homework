@@ -3,10 +3,15 @@ package com.thoughtworks.capacity.gtb.mvc;
 import com.thoughtworks.capacity.gtb.mvc.utils.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
 
 @RestController
+@Validated
 public class UserController {
     private final UserService userService;
 
@@ -15,13 +20,13 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
+    public ResponseEntity<?> register(@RequestBody @Valid User user) {
         userService.register(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(Result.success(null));
     }
 
     @GetMapping("/login")
-    public ResponseEntity<?> login(String name, String password) {
+    public ResponseEntity<?> login(@Size(max = 10, min = 3, message = "name is invalid") String name, String password) {
         return ResponseEntity.ok(Result.success(userService.login(name, password)));
     }
 
