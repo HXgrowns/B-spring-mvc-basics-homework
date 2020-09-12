@@ -14,30 +14,36 @@ import java.util.Set;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleException(Exception e) {
-        if (e instanceof GlobalException) {
-            GlobalException exception = (GlobalException) e;
-            return ResponseEntity.badRequest().body(Result.errorBusiness(exception.getException()));
-        } else if (e instanceof MethodArgumentNotValidException) {
-            MethodArgumentNotValidException exception = (MethodArgumentNotValidException) e;
+    @ExceptionHandler(GlobalException.class)
+    public ResponseEntity<?> handleGlobalException(GlobalException e) {
+        return ResponseEntity.badRequest().body(Result.errorBusiness(e.getException()));
+    }
 
-            BindingResult bindingResult = exception.getBindingResult();
-            if (bindingResult.hasFieldErrors()) {
-                for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                    String msg = fieldError.getDefaultMessage();
-                    return ResponseEntity.badRequest().body(Result.errorBusiness(msg));
-                }
-            }
-        } else if (e instanceof ConstraintViolationException) {
-            ConstraintViolationException exception = (ConstraintViolationException) e;
-            Set<ConstraintViolation<?>> constraintViolations = exception.getConstraintViolations();
-            for (ConstraintViolation<?> constraintViolation : constraintViolations) {
-                String message = constraintViolation.getMessage();
-                return ResponseEntity.badRequest().body(Result.errorBusiness(message));
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleMethodArgumentNotValidExceptionException(MethodArgumentNotValidException e) {
+        BindingResult bindingResult = e.getBindingResult();
+        String msg = "";
+        if (bindingResult.hasFieldErrors()) {
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                msg = fieldError.getDefaultMessage();
+                break;
             }
         }
+        return ResponseEntity.badRequest().body(Result.errorBusiness(msg));
+    }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handleConstraintViolationExceptionExceptionException(ConstraintViolationException e) {
+        Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
+        String message = "";
+        for (ConstraintViolation<?> constraintViolation : constraintViolations) {
+            message = constraintViolation.getMessage();
+        }
+        return ResponseEntity.badRequest().body(Result.errorBusiness(message));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception e) {
         return ResponseEntity.badRequest().body(Result.errorSystem());
     }
 }
